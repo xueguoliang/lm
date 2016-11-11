@@ -6,8 +6,7 @@
 
 int main(int argc, char* argv[])
 {
-    LMUserInput input;
-
+    /* init network module */
     LMNetwork* network = LMNetwork::instance();
     // send broadcast info
     LMJson json;
@@ -15,9 +14,10 @@ int main(int argc, char* argv[])
     json.add(LM_NAME, LMUtil::getHostname()); /*  read /etc/hostname */
     network->send(json.print());
 
+    LMUserInput input;
     while(1)
     {
-        input.get();
+        input.loop();
     }
 
     return 0;

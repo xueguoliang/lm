@@ -12,8 +12,11 @@ public:
 
     cJSON* _root;
 
+    // packet
     void add(string key, string value);
     string print();
+
+    // unpacket
     bool parse(char* buf);
     string get(string key);
 };

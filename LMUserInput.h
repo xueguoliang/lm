@@ -9,7 +9,12 @@ public:
     LMUserInput();
 
     char _buf[4096];
-    void get();
+    void loop();
+
+    void getcmd();
+    void handlecmd();
+
+    void handlelist();
 };
 
 #endif // LMUSERINPUT_H

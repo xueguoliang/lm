@@ -38,26 +38,18 @@ void *LMNetwork::_thread_func(void *)
         }
 
         string cmd = json.get(LM_CMD);
+
         if(cmd == LM_ONLINE)
         {
-            // save user info
-            string name = json.get(LM_NAME); // new user name;
-            LMCore::instance()->add_user(addr.sin_addr.s_addr, name);
-
-            LMJson resp;
-            resp.add(LM_CMD, LM_ONLINEACK);
-            resp.add(LM_NAME, LMCore::instance()->_name);
-
-            send(resp.print(), addr.sin_addr.s_addr);
-
-            printf("%s(0x%x) is online now\n", name.c_str(), addr.sin_addr.s_addr);
+            handle_online(json, addr.sin_addr.s_addr);
         }
         else if(cmd == LM_ONLINEACK)
         {
-            string name = json.get(LM_NAME); // new user name;
-            LMCore::instance()->add_user(addr.sin_addr.s_addr, name);
-
-            printf("%s(0x%x) is onlineack now\n", name.c_str(), addr.sin_addr.s_addr);
+            handle_online_ack(json, addr.sin_addr.s_addr);
+        }
+        else if(cmd == LM_SEND)
+        {
+            handle_send_msg(json);
         }
     }
 }
@@ -70,6 +62,34 @@ void LMNetwork::send(string msg, uint32_t ip)
     addr.sin_addr.s_addr = ip;
 
     sendto(this->_udpfd, msg.c_str(), strlen(msg.c_str()), 0, (struct sockaddr*)&addr, sizeof(addr));
+}
+
+void LMNetwork::handle_online_ack(LMJson &json, uint32_t peerip)
+{
+    string name = json.get(LM_NAME); // new user name;
+    LMCore::instance()->add_user(peerip, name);
+}
+
+void LMNetwork::handle_online(LMJson &json, uint32_t peerip)
+{
+    // save user info
+    string name = json.get(LM_NAME); // new user name;
+    LMCore::instance()->add_user(peerip, name);
+
+    LMJson resp;
+    resp.add(LM_CMD, LM_ONLINEACK);
+    resp.add(LM_NAME, LMCore::instance()->_name);
+
+    send(resp.print(), peerip);
+
+}
+
+void LMNetwork::handle_send_msg(LMJson &json)
+{
+    string name = json.get(LM_NAME);
+    string msg = json.get(LM_MSG);
+
+    printf("%s say: %s\n", name.c_str(), msg.c_str());
 }
 
 LMNetwork::LMNetwork()

@@ -58,5 +58,6 @@ using namespace std;
 #define LM_NAME "name"
 #define LM_LIST "list"
 #define LM_SEND "send"
+#define LM_MSG "msg"
 
 #endif //LM_H

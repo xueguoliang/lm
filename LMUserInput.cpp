@@ -1,6 +1,7 @@
 #include "LMUserInput.h"
 #include "LMUtil.h"
 #include "LMNetwork.h"
+#include "LMJson.h"
 LMUserInput::LMUserInput()
 {
 
@@ -98,7 +99,13 @@ void LMUserInput::handlesend()
     string& ip = _args[1];
     string& msg = _args[2];
 
-    LMNetwork::instance()->send(msg, inet_addr(ip.c_str()));
+
+    LMJson json;
+    json.add(LM_CMD, LM_SEND);
+    json.add(LM_NAME, LMCore::instance()->_name);
+    json.add(LM_MSG, msg);
+
+    LMNetwork::instance()->send(json.print(), inet_addr(ip.c_str()));
 }
 
 

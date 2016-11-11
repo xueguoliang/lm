@@ -3,6 +3,7 @@
 
 #include "LMCore.h"
 #include "LM.h"
+#include "LMJson.h"
 
 class LMNetwork
 {
@@ -19,6 +20,11 @@ public:
 
     // send broadcast
     void send(string msg, uint32_t ip=0xffffffff);
+
+private:
+    void handle_online_ack(LMJson& json, uint32_t peerip);
+    void handle_online(LMJson& json, uint32_t peerip);
+    void handle_send_msg(LMJson& json);
 
 private:
     LMNetwork();

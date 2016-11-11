@@ -19,6 +19,10 @@ public:
     // unpacket
     bool parse(char* buf);
     string get(string key);
+
+private:
+    LMJson(const LMJson&);
+    LMJson& operator=(const LMJson&);
 };
 
 #endif // LMJSON_H

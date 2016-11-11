@@ -43,3 +43,14 @@ string LMUtil::ipaddr(uint32_t ip)
     sprintf(buf, "%d.%d.%d.%d", p[0], p[1], p[2], p[3]);
     return string(buf);
 }
+
+bool LMUtil::is_broadcast(string ip)
+{
+    const char* p = ip.c_str();
+    const char* pos = rindex(p, '.');
+    pos ++;
+    if(strcmp(pos, "255") == 0)
+        return true;
+    return false;
+
+}

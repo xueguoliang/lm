@@ -99,11 +99,15 @@ void LMUserInput::handlesend()
     string& ip = _args[1];
     string& msg = _args[2];
 
+    bool b = LMUtil::is_broadcast(ip);
 
     LMJson json;
     json.add(LM_CMD, LM_SEND);
     json.add(LM_NAME, LMCore::instance()->_name);
-    json.add(LM_MSG, msg);
+    if(b)
+        json.add(LM_MSG, msg + "[broadcast]");
+    else
+        json.add(LM_MSG, msg);
 
     LMNetwork::instance()->send(json.print(), inet_addr(ip.c_str()));
 }

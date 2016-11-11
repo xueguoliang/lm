@@ -43,7 +43,11 @@ void LMUserInput::handlelist()
         ++it)
     {
         LMOther* other = it->second;
-        printf("  %s(%s)\n", other->_name.c_str(), LMUtil::ipaddr(other->_ip).c_str());
+        printf("get other pointer is %p\n", other);
+        const char* name = other->_name.c_str();
+        string ip = LMUtil::ipaddr(other->_ip);
+
+        printf("  %s(%s)\n", name, ip.c_str());
         // user list:
         //   xueguoliang(192.168.11.80)
         //   xueguoliang(192.168.11.79)

@@ -57,5 +57,6 @@ using namespace std;
 #define LM_ONLINEACK "onlineack"
 #define LM_NAME "name"
 #define LM_LIST "list"
+#define LM_SEND "send"
 
 #endif //LM_H

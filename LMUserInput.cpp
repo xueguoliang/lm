@@ -1,5 +1,6 @@
 #include "LMUserInput.h"
 #include "LMUtil.h"
+#include "LMNetwork.h"
 LMUserInput::LMUserInput()
 {
 
@@ -8,6 +9,7 @@ LMUserInput::LMUserInput()
 void LMUserInput::loop()
 {
     getcmd();
+    splitcmd();
     handlecmd();
 }
 
@@ -24,12 +26,45 @@ void LMUserInput::getcmd()
     _buf[strlen(_buf)-1] = 0;
 }
 
+void LMUserInput::splitcmd()
+{
+    _args.clear();
+
+    char* saveptr = NULL;
+    char* first = strtok_r(this->_buf, " \t", &saveptr);
+    _args.push_back(first);
+
+    char* second = strtok_r(NULL, " \t", &saveptr);
+    if(second)
+        _args.push_back(second);
+    else
+        return;
+
+    char* third = strtok_r(NULL, "\0", &saveptr);
+    if(third)
+        _args.push_back(third);
+
+    return;
+}
+
 void LMUserInput::handlecmd()
 {
-    if(string(_buf) == LM_LIST)
+#define BRANCH(cmd, func) if(_args[0] == cmd) func()
+
+    BRANCH(LM_LIST, handlelist);
+    BRANCH(LM_SEND, handlesend);
+
+#if 0
+    if(_args[0] == LM_LIST)
     {
         handlelist();
     }
+    // send 192.168.11.60 hello world
+    if(_args[0] == LM_SEND)
+    {
+        handlesend();
+    }
+#endif
 }
 
 void LMUserInput::handlelist()
@@ -52,6 +87,18 @@ void LMUserInput::handlelist()
         //   xueguoliang(192.168.11.80)
         //   xueguoliang(192.168.11.79)
     }
+}
+
+void LMUserInput::handlesend()
+{
+    /* _args[0], [1], [2] */
+    if(_args.size() < 3)
+        return;
+
+    string& ip = _args[1];
+    string& msg = _args[2];
+
+    LMNetwork::instance()->send(msg, inet_addr(ip.c_str()));
 }
 
 

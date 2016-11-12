@@ -1,19 +1,22 @@
 
+target := lm.bin
+all: $(target)
+
 CC := g++
 LIBS += -lpthread
 CPPFLAGS += -std=c++11 -g
 
-cppsrc := $(shell find -name "*.cpp")
-csrc := $(shell find -name "*.c")
+src := $(shell find -name "*.cpp")
+# .d文件
+dep := $(src:.cpp=.d)
 
-obj := $(csrc:.c=.o)
-obj += $(cppsrc:.cpp=.o)
+-include $(dep)
+%.d: %.cpp
+	$(CC) -MM $< > $@
 
-target := lm.bin
+obj += $(src:.cpp=.o)
 
-all: $(target)
-
-$(target): $(obj)
+$(target): $(obj) cJSON.o
 	$(CC) -o $@ $^ $(LIBS)
 
 clean:

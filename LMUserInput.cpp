@@ -27,10 +27,29 @@ void LMUserInput::getcmd()
     _buf[strlen(_buf)-1] = 0;
 }
 
+/*
+    list
+    send 192.168.11.80: hello world
+    senda: helloworld
+*/
 void LMUserInput::splitcmd()
 {
     _args.clear();
 
+    char* saveptr = NULL;
+    char* first = strtok_r(this->_buf, ":", &saveptr);
+    char* content = strtok_r(NULL, "\0", &saveptr);
+
+    char* cmd=strtok_r(first, " \t", &saveptr);
+    char* user = strtok_r(NULL, "\0", &saveptr);
+
+    _args.push_back(cmd);
+    if(user)
+        _args.push_back(user);
+    if(content)
+        _args.push_back(content);
+
+#if 0
     char* saveptr = NULL;
     char* first = strtok_r(this->_buf, " \t", &saveptr);
     _args.push_back(first);
@@ -46,6 +65,7 @@ void LMUserInput::splitcmd()
         _args.push_back(third);
 
     return;
+#endif
 }
 
 void LMUserInput::handlecmd()

@@ -9,6 +9,7 @@ LMUserInput::LMUserInput()
 
 void LMUserInput::loop()
 {
+    // 获取命令，拆分命令，处理命令
     getcmd();
     splitcmd();
     handlecmd();
@@ -136,7 +137,7 @@ void LMUserInput::handlesend()
 // sendf 192.168.11.80: path1
 // _args[0] = sendf
 // _args[1] = 192.168.11.80
-// _args[2] = path
+// _args[2] = ../../aa/../../bb
 void LMUserInput::handlesendf()
 {
     if(_args.size() < 3)

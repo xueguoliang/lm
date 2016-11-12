@@ -23,27 +23,34 @@ void *LMNetwork::_thread_func(void *)
     socklen_t len = sizeof(addr);
     while(1)
     {
+        /* 接收报文 */
         memset(_buf, 0, sizeof(_buf));
         recvfrom(_udpfd, _buf, sizeof(_buf), 0, (struct sockaddr*)&addr, &len);
+
+        /* 判断是不是自己发给自己的报文 */
         list<uint32_t>& ips = LMCore::instance()->_ips;
         auto it = find(ips.begin(), ips.end(), addr.sin_addr.s_addr);
         if(it != ips.end()) // find it, loop
         {
-            continue;
+            continue;// 如果是自己发的报文，那么丢弃
         }
 
+        /* 解析JSON报文 */
         LMJson json;
         if(!json.parse(_buf))
         {
             continue; // drop packet
         }
 
+        /* 获取报文的cmd字段 */
         string cmd = json.get(LM_CMD);
 
+        /* 新用户上线时，发送LM_ONLINE命令 */
         if(cmd == LM_ONLINE)
         {
             handle_online(json, addr.sin_addr.s_addr);
         }
+        /* 其他账户对新账户上线的回应 */
         else if(cmd == LM_ONLINEACK)
         {
             handle_online_ack(json, addr.sin_addr.s_addr);
@@ -52,6 +59,7 @@ void *LMNetwork::_thread_func(void *)
         {
             handle_send_msg(json);
         }
+        /* 收到对方发文件的请求 */
         else if(cmd==LM_SENDF)
         {
             handle_send_file(json, addr.sin_addr.s_addr);
@@ -61,6 +69,7 @@ void *LMNetwork::_thread_func(void *)
 
 void LMNetwork::send(string msg, uint32_t ip)
 {
+    /* 发送报文 */
     struct sockaddr_in addr;
     addr.sin_family = AF_INET;
     addr.sin_port = htons(LM_PORT_UDP);
@@ -71,22 +80,24 @@ void LMNetwork::send(string msg, uint32_t ip)
 
 void LMNetwork::handle_online_ack(LMJson &json, uint32_t peerip)
 {
+    // 保存其他账户信息
     string name = json.get(LM_NAME); // new user name;
     LMCore::instance()->add_user(peerip, name);
 }
 
 void LMNetwork::handle_online(LMJson &json, uint32_t peerip)
 {
-    // save user info
+    // 保存新用户信息
     string name = json.get(LM_NAME); // new user name;
     LMCore::instance()->add_user(peerip, name);
 
+    // 回应，我也在LM_ONLINEACK
     LMJson resp;
     resp.add(LM_CMD, LM_ONLINEACK);
     resp.add(LM_NAME, LMCore::instance()->_name);
 
+    // 发送报文
     send(resp.print(), peerip);
-
 }
 
 void LMNetwork::handle_send_msg(LMJson &json)
@@ -99,11 +110,13 @@ void LMNetwork::handle_send_msg(LMJson &json)
 
 void LMNetwork::handle_send_file(LMJson &json, uint32_t peerip)
 {
+    /* 根据对方发送的文件发送请求的参数（对方账户，对方文件路径，对方ip地址） */
     string name = json.get(LM_NAME);
     string path = json.get(LM_PATH);
 
     printf("ready to recv file %s, from %s\n", path.c_str(), name.c_str());
 
+    // 创建接收线程
     new LMFileRecv(name, path, peerip);
 }
 

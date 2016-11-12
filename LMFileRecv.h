@@ -16,7 +16,7 @@ public:
 
     static void* thread_func(void* arg);
     void run();
-    void recv();
+    void recv_file();
 };
 
 #endif // LMFILERECV_H

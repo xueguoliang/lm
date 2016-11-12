@@ -51,6 +51,8 @@ void LMFileSend::send_file(char *path)
     }
 
     fprintf(fp, "%s\n", LM_FILEEOF);
+
+    fflush(fp);
 }
 
 char *LMFileSend::change_cwd(char *filename)
@@ -94,7 +96,8 @@ uint64_t LMFileSend::file_size(char *path)
 
 void LMFileSend::send_reg(char *path, FILE* fp)
 {
-    fprintf(fp, "%s\n", LM_SPERATOR);
+    int ret = fprintf(fp, "%s\n", LM_SPERATOR);
+    printf("fprintf return %d\n", ret);
     fprintf(fp, "%s\n", LM_REG);
     fprintf(fp, "%s\n", path);
     fprintf(fp, "%llu\n", (long long unsigned int)file_size(path));
@@ -111,10 +114,12 @@ void LMFileSend::send_reg(char *path, FILE* fp)
         ret = fwrite(buf, ret, 1, fp);
         if(ret != 1)
         {
+            printf("exit 1\n");
             exit(1);
         }
     }
     fclose(f);
+    printf("sending file end: %s\n", path);
 }
 
 void LMFileSend::send_dir(char *path, FILE* fp)

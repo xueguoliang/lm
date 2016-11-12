@@ -71,11 +71,10 @@ void LMFileRecv::recv_file(int fd)
         else if(strcmp(p, LM_REG) == 0)
         {
             p = get_line(fp); // path of file
+            FILE* f = fopen(p, "w");
 
             uint64_t filelen = atoll(get_line(fp));
             printf("recv file path: %s, filelen=%llu\n", p, (long long unsigned int)filelen);
-
-            FILE* f = fopen(p, "w");
 
             while(filelen>0)
             {

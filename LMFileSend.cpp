@@ -86,7 +86,7 @@ void LMFileSend::send_reg(char *path, FILE* fp)
     fprintf(fp, "%s\n", LM_SPERATOR);
     fprintf(fp, "%s\n", LM_REG);
     fprintf(fp, "%s\n", path);
-    fprintf(fp, "%llu\n", file_size(path));
+    fprintf(fp, "%llu\n", (long long unsigned int)file_size(path));
 
     char buf[1024];
     FILE* f = fopen(path, "r");

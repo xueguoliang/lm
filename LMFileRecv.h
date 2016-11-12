@@ -16,7 +16,10 @@ public:
 
     static void* thread_func(void* arg);
     void run();
-    void recv_file();
+    void recv_file(int fd);
+    char _buf[1024];
+
+    char* get_line(FILE* fp);
 };
 
 #endif // LMFILERECV_H

@@ -2,6 +2,7 @@
 #define LMFILESERVICE_H
 
 #include "LM.h"
+#include "LMFileSend.h"
 /* process */
 class LMFileService
 {
@@ -12,6 +13,12 @@ public:
 
     void start();
     void sub_process_run();
+
+    static void child_process_end(int sig);
+
+    map<pid_t, LMFileSend*> _fileSendingProcess;
+
+    bool _bChildProcessEnd;
 
 private:
     LMFileService();

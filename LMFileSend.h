@@ -20,7 +20,7 @@ public:
     char* change_cwd(char* path);
 
     int file_type(char* path);
-    int file_size(char* path);
+    uint64_t file_size(char* path);
     void send_reg(char* path, FILE* fp);
     void send_dir(char* path, FILE* fp);
 

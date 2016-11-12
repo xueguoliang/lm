@@ -20,6 +20,9 @@ void LMFileSend::process_send(int newfd, uint32_t ip)
     path[strlen(path)-1] = 0;
 
     send_file(path);
+
+    // wait peer close socket
+    recv(newfd, path, 1, 0);
 }
 
 void LMFileSend::send_file(char *path)
@@ -71,7 +74,7 @@ int LMFileSend::file_type(char *path)
     return LM_FILE_TYPE_OTH;
 }
 
-int LMFileSend::file_size(char *path)
+uint64_t LMFileSend::file_size(char *path)
 {
     struct stat file_stat;
     lstat(path, &file_stat);
@@ -83,7 +86,7 @@ void LMFileSend::send_reg(char *path, FILE* fp)
     fprintf(fp, "%s\n", LM_SPERATOR);
     fprintf(fp, "%s\n", LM_REG);
     fprintf(fp, "%s\n", path);
-    fprintf(fp, "%d\n", file_size(path));
+    fprintf(fp, "%llu\n", file_size(path));
 
     char buf[1024];
     FILE* f = fopen(path, "r");
@@ -114,7 +117,7 @@ void LMFileSend::send_dir(char *path, FILE* fp)
     while(entry = readdir(dir))
     {
         if(string(entry->d_name) == "." ||
-                string(entry->d_name == ".."))
+                string(entry->d_name) == "..")
             continue;
 
         //if(*entry->d_name == '.')

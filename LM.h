@@ -65,5 +65,6 @@ using namespace std;
 #define LM_DIR "d"
 #define LM_REG "r"
 #define LM_SPERATOR "5h5h"
+#define LM_FILEEOF "0"
 
 #endif //LM_H

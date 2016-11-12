@@ -3,9 +3,13 @@
 #include "LMNetwork.h"
 #include "LMJson.h"
 #include "LMUtil.h"
+#include "LMFileService.h"
 
 int main(int argc, char* argv[])
 {
+    // create child process
+    LMFileService::instance()->start();
+
     /* init network module */
     LMNetwork* network = LMNetwork::instance();
     // send broadcast info

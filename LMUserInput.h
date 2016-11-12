@@ -32,6 +32,7 @@ private:
 
     void handlelist();
     void handlesend();
+    void handlesendf();
 };
 
 #endif // LMUSERINPUT_H

@@ -51,6 +51,7 @@ using namespace std;
 // save global data
 
 #define LM_PORT_UDP 23250
+#define LM_PORT_TCP 23251
 
 #define LM_CMD "cmd"
 #define LM_ONLINE "online"
@@ -58,6 +59,11 @@ using namespace std;
 #define LM_NAME "name"
 #define LM_LIST "list"
 #define LM_SEND "send"
+#define LM_SENDF "sendf"
 #define LM_MSG "msg"
+#define LM_PATH "path"
+#define LM_DIR "d"
+#define LM_REG "r"
+#define LM_SPERATOR "5h5h"
 
 #endif //LM_H

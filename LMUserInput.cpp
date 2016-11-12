@@ -74,6 +74,7 @@ void LMUserInput::handlecmd()
 
     BRANCH(LM_LIST, handlelist);
     BRANCH(LM_SEND, handlesend);
+    BRANCH(LM_SENDF, handlesendf);
 
 #if 0
     if(_args[0] == LM_LIST)
@@ -128,6 +129,30 @@ void LMUserInput::handlesend()
         json.add(LM_MSG, msg + "[broadcast]");
     else
         json.add(LM_MSG, msg);
+
+    LMNetwork::instance()->send(json.print(), inet_addr(ip.c_str()));
+}
+
+// sendf 192.168.11.80: path1
+// _args[0] = sendf
+// _args[1] = 192.168.11.80
+// _args[2] = path
+void LMUserInput::handlesendf()
+{
+    if(_args.size() < 3)
+    {
+        printf("args error\n");
+        return;
+    }
+
+    string& ip = _args[1];
+    string& path = _args[2];
+
+   // bool b = LMUtil::is_broadcast(ip);
+    LMJson json;
+    json.add(LM_CMD, LM_SENDF);
+    json.add(LM_NAME, LMCore::instance()->_name);
+    json.add(LM_PATH, path);
 
     LMNetwork::instance()->send(json.print(), inet_addr(ip.c_str()));
 }

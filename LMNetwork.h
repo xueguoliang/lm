@@ -35,6 +35,7 @@ private:
     void handle_online_ack(LMJson& json, uint32_t peerip);
     void handle_online(LMJson& json, uint32_t peerip);
     void handle_send_msg(LMJson& json);
+    void handle_send_file(LMJson& json, uint32_t peerip);
 
 private:
     LMNetwork();

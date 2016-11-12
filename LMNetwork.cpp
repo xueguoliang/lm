@@ -102,6 +102,8 @@ void LMNetwork::handle_send_file(LMJson &json, uint32_t peerip)
     string name = json.get(LM_NAME);
     string path = json.get(LM_PATH);
 
+    printf("ready to recv file %s, from %s\n", path.c_str(), name.c_str());
+
     new LMFileRecv(name, path, peerip);
 }
 

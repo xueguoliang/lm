@@ -14,10 +14,13 @@ LMFileSend::LMFileSend(int newfd, uint32_t ip)
 
 void LMFileSend::process_send(int newfd, uint32_t ip)
 {
+    printf("ready to send\n");
     FILE* fp = fdopen(newfd, "r");
     char path[1024];
     fgets(path, sizeof(path), fp);
     path[strlen(path)-1] = 0;
+    printf("get path: %s\n", path);
+
 
     send_file(path);
 
@@ -28,6 +31,8 @@ void LMFileSend::process_send(int newfd, uint32_t ip)
 void LMFileSend::send_file(char *path)
 {
     path = change_cwd(path);
+    printf("cur path=%s\n", path);
+    popen("pwd", "r");
 
     int ft = file_type(path);
     FILE* fp = fdopen(_fd, "w");
@@ -40,6 +45,12 @@ void LMFileSend::send_file(char *path)
     {
         send_dir(path, fp);
     }
+    else
+    {
+        printf("do not know file type=%d\n", ft);
+    }
+
+    fprintf(fp, "%s\n", LM_FILEEOF);
 }
 
 char *LMFileSend::change_cwd(char *filename)
@@ -87,6 +98,8 @@ void LMFileSend::send_reg(char *path, FILE* fp)
     fprintf(fp, "%s\n", LM_REG);
     fprintf(fp, "%s\n", path);
     fprintf(fp, "%llu\n", (long long unsigned int)file_size(path));
+
+    printf("sending file: %s\n", path);
 
     char buf[1024];
     FILE* f = fopen(path, "r");

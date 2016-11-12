@@ -37,6 +37,7 @@ void LMFileService::sub_process_run()
     int ret = bind(_listenfd, (struct sockaddr*)&addr, sizeof(addr));
     if(ret < 0)
     {
+        printf("file trans services bind error\n");
         exit(1);
     }
 
